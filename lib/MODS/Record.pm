@@ -24,7 +24,7 @@ MODS::Record - Perl extension for handling MODS records
  $mods->add_location(sub {
 	$_[0]->add_physicalLocation('here');
 	$_[0]->add_shelfLocation('here too');
-	$_[0]->add_url('http://here.org/&there');
+	$_[0]->add_url('http://here.org/there');
  }); 
 
  # Set an inline XML extension...
