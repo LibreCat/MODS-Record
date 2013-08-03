@@ -132,11 +132,11 @@ is a null operation. When undef als argument is provided, then the element is de
 element an ARRAY (ref) of MODS::Element::Xxx can be provided (where 'Xxx' is the corresponding MODS element). E.g.
 
  # Delete all abstracts
- $mods->abstract(undef);
+ $mods->set_abstract(undef);
 
  # Set all abstracts
- $mods->abstract(MODS::Element::Abstract->new(), MODS::Element::Abstract->new(), ...);
- $mods->abstract([ MODS::Element::Abstract->new(), MODS::Element::Abstract->new(), ... ]);
+ $mods->set_abstract(MODS::Element::Abstract->new(), MODS::Element::Abstract->new(), ...);
+ $mods->set_abstract([ MODS::Element::Abstract->new(), MODS::Element::Abstract->new(), ... ]);
 
 =head2 as_xml()
 
