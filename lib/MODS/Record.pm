@@ -196,7 +196,7 @@ But each sub-element keeps its original order (e.g. each 'title' in 'titleInfo')
 =cut
 
 use vars qw( $VERSION );
-$VERSION = '0.01';
+$VERSION = '0.02';
 
 use Exporter;
 our @ISA = qw(Exporter);
