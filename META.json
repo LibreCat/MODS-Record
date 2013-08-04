@@ -1,0 +1,366 @@
+{
+   "abstract" : "Perl extension for handling MODS records",
+   "author" : [
+      "Patrick Hochstenbach <patrick.hochstenbach@ugent.be>"
+   ],
+   "dynamic_config" : 1,
+   "generated_by" : "Module::Build version 0.4004, CPAN::Meta::Converter version 2.130880",
+   "license" : [
+      "perl_5"
+   ],
+   "meta-spec" : {
+      "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+      "version" : "2"
+   },
+   "name" : "MODS-Record",
+   "prereqs" : {
+      "build" : {
+         "requires" : {
+            "Software::License" : "0",
+            "Test::More" : "0.98"
+         }
+      },
+      "configure" : {
+         "requires" : {
+            "Module::Build" : "0.40"
+         }
+      },
+      "runtime" : {
+         "requires" : {
+            "Carp" : "0",
+            "IO::file" : "0",
+            "JSON" : "0",
+            "Moo" : "0",
+            "XML::Parser" : "0"
+         }
+      }
+   },
+   "provides" : {
+      "MODS::Collection" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::Abstract" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::AccessCondition" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::Area" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::Caption" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::Cartographics" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::City" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::CitySection" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::Classification" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::Continent" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::Coordinates" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::CopyInformation" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::CopyrightDate" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::Country" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::County" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::Date" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::DateCaptured" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::DateCreated" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::DateIssued" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::DateModified" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::DateOther" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::DateValid" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::Description" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::DescriptionStandard" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::Detail" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::DigitalOrigin" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::DisplayForm" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::Edition" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::End" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::EnumerationAndChronology" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::Etal" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::Extension" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::Extent" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::ExtraterrestrialArea" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::Form" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::Frequency" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::Genre" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::Geographic" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::GeographicCode" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::HierarchicalGeographic" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::HoldingExternal" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::HoldingSimple" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::Identifier" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::InternetMediaType" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::Island" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::Issuance" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::Language" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::LanguageOfCataloging" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::LanguageTerm" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::List" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::Location" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::Mods" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::ModsCollection" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::Name" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::NamePart" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::NonSort" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::Note" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::Number" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::Occupation" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::OriginInfo" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::Part" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::PartName" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::PartNumber" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::PhysicalDescription" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::PhysicalLocation" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::Place" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::PlaceTerm" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::Projection" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::Province" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::Publisher" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::RecordChangeDate" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::RecordContentSource" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::RecordCreationDate" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::RecordIdentifier" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::RecordInfo" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::RecordOrigin" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::ReformattingQuality" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::Region" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::RelatedItem" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::Role" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::RoleTerm" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::Scale" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::ScriptTerm" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::ShelfLocation" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::ShelfLocator" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::Start" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::State" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::SubLocation" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::SubTitle" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::Subject" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::TableOfContents" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::TargetAudience" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::Temporal" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::Territory" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::Text" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::Title" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::TitleInfo" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::Topic" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::Total" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::TypeOfResource" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Element::Url" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Parser" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Record" : {
+         "file" : "lib/MODS/Record.pm",
+         "version" : "0.04"
+      },
+      "MODS::Record::Unique" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Record::Util" : {
+         "file" : "lib/MODS/Record.pm"
+      },
+      "MODS::Record::Xml_String" : {
+         "file" : "lib/MODS/Record.pm"
+      }
+   },
+   "release_status" : "stable",
+   "resources" : {
+      "license" : [
+         "http://dev.perl.org/licenses/"
+      ]
+   },
+   "version" : "0.04"
+}
