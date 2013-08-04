@@ -197,6 +197,11 @@ But each sub-element keeps its original order (e.g. each 'title' in 'titleInfo')
 
 =back
 
+=head1 LICENSE
+
+This library is free software and may be distributed under the same terms
+as perl itself. See L<http://dev.perl.org/licenses/>.
+
 =cut
 
 use vars qw( $VERSION );
