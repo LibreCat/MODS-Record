@@ -125,11 +125,11 @@ METHODS
     MODS element). E.g.
 
      # Delete all abstracts
-     $mods->abstract(undef);
+     $mods->set_abstract(undef);
 
      # Set all abstracts
-     $mods->abstract(MODS::Element::Abstract->new(), MODS::Element::Abstract->new(), ...);
-     $mods->abstract([ MODS::Element::Abstract->new(), MODS::Element::Abstract->new(), ... ]);
+     $mods->set_abstract(MODS::Element::Abstract->new(), MODS::Element::Abstract->new(), ...);
+     $mods->set_abstract([ MODS::Element::Abstract->new(), MODS::Element::Abstract->new(), ... ]);
 
   as_xml()
   as_xml(xml_prolog=>1)
@@ -156,12 +156,18 @@ DESIGN NOTES
     *   I needed a MODS module to parse and create MODS records for our
         institutional repository
 
+    *   This module is part of the LibreCat/Catmandu project
+        http://librecat.org
+
     *   This module is not created for speed
 
     *   This module doesn't have any notion of ordering of MODS elements
         themselves (e.g. first 'titleInfo', then 'name'). But each
         sub-element keeps its original order (e.g. each 'title' in
         'titleInfo').
+
+    *   Heiko Jansen provides at GitHub a Moose-based MODS parser
+        https://github.com/heikojansen/MODS--Record
 
 AUTHORS
     *   Patrick Hochstenbach <Patrick . Hochstenbach at UGent . be>
