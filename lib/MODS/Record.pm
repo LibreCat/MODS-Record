@@ -178,10 +178,14 @@ Parse and JSON string or JSON::Handle into a MODS::Record.
 
 =item * I needed a MODS module to parse and create MODS records for our institutional repository
 
+=item * This module is part of the LibreCat/Catmandu project http://librecat.org
+
 =item * This module is not created for speed
 
 =item * This module doesn't have any notion of ordering of MODS elements themselves (e.g. first 'titleInfo', then 'name').
 But each sub-element keeps its original order (e.g. each 'title' in 'titleInfo').
+
+=item * Heiko Jansen provides at GitHub a Moose-based MODS parser https://github.com/heikojansen/MODS--Record
 
 =back
 
@@ -196,7 +200,7 @@ But each sub-element keeps its original order (e.g. each 'title' in 'titleInfo')
 =cut
 
 use vars qw( $VERSION );
-$VERSION = '0.03';
+$VERSION = '0.04';
 
 use Exporter;
 our @ISA = qw(Exporter);
@@ -282,9 +286,6 @@ sub AUTOLOAD {
 		die "no such method $attrib" unless $self->can($attrib);
 
 		return $self->_setter($attrib,@args);
-	}
-	else {
-		die "no such method $meth";
 	}
 }
 

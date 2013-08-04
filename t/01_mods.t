@@ -6,7 +6,6 @@ use Test::More tests=>49;
 
 use MODS::Record qw(xml_string);
 use IO::File;
-use Data::Dumper;
 
 my $mods;
 
@@ -78,8 +77,11 @@ ok($collection = MODS::Record->from_json(IO::File->new("t/mods.json")),"from_jso
 is($collection->get_mods->get_titleInfo->get_title,"Telescope Peak from Zabriskie Point","titleInfo/title");
 is($collection->get_mods->get_titleInfo(type=>'alternative')->get_title,"Telescope PK from Zabriskie Pt.","titleInfo[type=\"alternative\"]/title");
 
-my $fh = IO::File->new('>t/mods_out.xml');
-my $xml;
-ok($xml = $collection->as_xml(xml_prolog=>1),"as_xml");
-print $fh $xml;
-$fh->close();
+SKIP: {
+ my $fh = IO::File->new('>t/mods_out.xml');
+ skip "Can't write to system",1 unless defined $fh;
+ my $xml;
+ ok($xml = $collection->as_xml(xml_prolog=>1),"as_xml");
+ print $fh $xml;
+ $fh->close();
+}
