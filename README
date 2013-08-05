@@ -52,6 +52,16 @@ SYNOPSIS
      my $mods = MODS::Record->from_xml(IO::File->new('mods.xml'));
      my $mods = MODS::Record->from_json(IO::File->new('mods.js'));
 
+     my $count = MODS::Record->from_xml(IO::File->new('mods.xml'), sub {
+            my $mods = shift;
+            ...     
+     });
+
+     my $count = MODS::Record->from_json(IO::File->new('mods.js'), sub {
+            my $mods = shift;
+            ...     
+     });
+
 DESCRIPTION
     This module provides MODS (http://www.loc.gov/standards/mods/) parsing
     and creation for MODS Schema 3.5.
@@ -135,17 +145,42 @@ METHODS
   as_xml(xml_prolog=>1)
     Return the record as XML.
 
-  from_xml($string)
-  from_xml(IO::Handle)
-    Parse an XML string or IO::Handle into a MODS::Record.
+  from_xml($string [, $callback])
+  from_xml(IO::Handle [, $callback])
+    Parse an XML string or IO::Handle into a MODS::Record. This method
+    return the parsed JSON.
+
+    If a callback function is provided then for each MODS element in the XML
+    stream the callback will be called. The method returns the number of
+    parsed MODS elements.
+
+     E.g.
+        my $mods = MODS::Record->from_xml( IO::File->new(...) );
+
+        my $count = MODS::Record->from_xml( IO::File->new(...) , sub { 
+            my $mods = shift;
+        } );
 
   as_json()
   as_json(pretty=>1)
     Return the record as JSON string.
 
-  from_json($string)
-  from_json(IO::Handle)
-    Parse and JSON string or JSON::Handle into a MODS::Record.
+  from_json($string [, $callback])
+  from_json(IO::Handle [, $callback])
+    Parse and JSON string or JSON::Handle into a MODS::Record. This method
+    return the parsed JSON.
+
+    If a callback function is provided then we expect as input a stream of
+    JSON strings (each line one JSON string). For each MODS object in the
+    JSON stream the callback will be called. The method returns the number
+    of parsed strings.
+
+     E.g.
+        my $mods = MODS::Record->from_json( IO::File->new(...) );
+
+        my $count = MODS::Record->from_json( IO::File->new(...) , sub { 
+            my $mods = shift;
+        } );
 
 SEE ALSO
     *   Library Of Congress MODS pages (http://www.loc.gov/standards/mods/)
@@ -171,4 +206,8 @@ DESIGN NOTES
 
 AUTHORS
     *   Patrick Hochstenbach <Patrick . Hochstenbach at UGent . be>
+
+LICENSE
+    This library is free software and may be distributed under the same
+    terms as perl itself. See <http://dev.perl.org/licenses/>.
 

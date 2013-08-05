@@ -1,7 +1,8 @@
 Revision history for perl module MODS::Record
 
-0.05 2013-08-04
+0.05 2013-08-05
     - Adding Changes file
+    - Adding support for callback function in from_xml, from_json
 
 0.04 2013-08-04
     - Fixing test scripts based on CPAN feedback

@@ -2,7 +2,7 @@
 
 use strict;
 
-use Test::More tests=>49;
+use Test::More tests=>57;
 
 use MODS::Record qw(xml_string);
 use IO::File;
@@ -77,11 +77,18 @@ ok($collection = MODS::Record->from_json(IO::File->new("t/mods.json")),"from_jso
 is($collection->get_mods->get_titleInfo->get_title,"Telescope Peak from Zabriskie Point","titleInfo/title");
 is($collection->get_mods->get_titleInfo(type=>'alternative')->get_title,"Telescope PK from Zabriskie Pt.","titleInfo[type=\"alternative\"]/title");
 
-SKIP: {
- my $fh = IO::File->new('>t/mods_out.xml');
- skip "Can't write to system",1 unless defined $fh;
- my $xml;
- ok($xml = $collection->as_xml(xml_prolog=>1),"as_xml");
- print $fh $xml;
- $fh->close();
-}
+my $xml;
+ok($xml = $collection->as_xml,"as_xml");
+ok($xml =~ /^<mods:modsCollection/,"looks like xml");
+
+my $json;
+ok($json = $collection->as_json,"as_json");
+ok($json = $collection->get_mods->as_json,"as_json (element)");
+ok($json = $collection->get_mods->get_titleInfo->as_json,"as_json (element)");
+
+my $obj;
+is(MODS::Record->from_json(IO::File->new("t/mods_multiple.json"),sub { $obj = shift }),2,"from_json (callback)");
+is($obj->get_titleInfo->get_title,"Telescope Peak from Zabriskie Point","titleInfo/title");
+
+is(MODS::Record->from_xml(IO::File->new("t/mods.xml"), sub { $obj = shift}),1,"from_xml (callback");
+is($obj->get_titleInfo->get_title,"Telescope Peak from Zabriskie Point","titleInfo/title");

@@ -56,6 +56,16 @@ MODS::Record - Perl extension for handling MODS records
  my $mods = MODS::Record->from_xml(IO::File->new('mods.xml'));
  my $mods = MODS::Record->from_json(IO::File->new('mods.js'));
 
+ my $count = MODS::Record->from_xml(IO::File->new('mods.xml'), sub {
+	my $mods = shift;
+	...	
+ });
+
+ my $count = MODS::Record->from_json(IO::File->new('mods.js'), sub {
+	my $mods = shift;
+	...	
+ });
+
 =head1 DESCRIPTION
 
 This module provides MODS (http://www.loc.gov/standards/mods/) parsing and creation for MODS Schema 3.5.
@@ -144,11 +154,21 @@ element an ARRAY (ref) of MODS::Element::Xxx can be provided (where 'Xxx' is the
 
 Return the record as XML.
 
-=head2 from_xml($string)
+=head2 from_xml($string [, $callback])
 
-=head2 from_xml(IO::Handle)
+=head2 from_xml(IO::Handle [, $callback])
 
-Parse an XML string or IO::Handle into a MODS::Record.
+Parse an XML string or IO::Handle into a MODS::Record. This method return the parsed JSON.
+
+If a callback function is provided then for each MODS element in the XML stream the callback will be called.
+The method returns the number of parsed MODS elements.
+
+ E.g.
+    my $mods = MODS::Record->from_xml( IO::File->new(...) );
+
+    my $count = MODS::Record->from_xml( IO::File->new(...) , sub { 
+    	my $mods = shift;
+    } );
 
 =head2 as_json()
 
@@ -156,11 +176,22 @@ Parse an XML string or IO::Handle into a MODS::Record.
 
 Return the record as JSON string.
 
-=head2 from_json($string)
+=head2 from_json($string [, $callback])
 
-=head2 from_json(IO::Handle)
+=head2 from_json(IO::Handle [, $callback])
 
-Parse and JSON string or JSON::Handle into a MODS::Record.
+Parse and JSON string or JSON::Handle into a MODS::Record. This method return the parsed JSON.
+
+If a callback function is provided then we expect as input a stream of JSON strings 
+(each line one JSON string). For each MODS object in the JSON stream the callback will be called.
+The method returns the number of parsed strings.
+
+ E.g.
+    my $mods = MODS::Record->from_json( IO::File->new(...) );
+
+    my $count = MODS::Record->from_json( IO::File->new(...) , sub { 
+    	my $mods = shift;
+    } );
 
 =head1 SEE ALSO
 
@@ -218,13 +249,13 @@ sub new {
 }
 
 sub from_xml {
-	my ($self,$source) = @_;
-	MODS::Parser->new->parse($source);
+	my ($self,@opts) = @_;
+	MODS::Parser->new->parse(@opts);
 }
 
 sub from_json {
-	my ($self,$source) = @_;
-	MODS::Parser->new->parse_json($source);
+	my ($self,@opts) = @_;
+	MODS::Parser->new->parse_json(@opts);
 }
 
 sub xml_string {
@@ -245,13 +276,13 @@ sub new {
 }
 
 sub from_xml {
-	my ($self,$source) = @_;
-	MODS::Parser->new->parse($source);
+	my ($self,@opts) = @_;
+	MODS::Parser->new->parse(@opts);
 }
 
 sub from_json {
-	my ($self,$source) = @_;
-	MODS::Parser->new->parse_json($source);
+	my ($self,@opts) = @_;
+	MODS::Parser->new->parse_json(@opts);
 }
 
 sub xml_string {
@@ -2278,32 +2309,66 @@ our @stack = ();
 our $body;
 our $level = 0;
 our $flag  = 0;
+our $count = 0;
 
 sub parse {
-	my ($self,$source) = @_;
+	my ($self,$source,$callback) = @_;
+
+	@stack = ();
+	$body  = undef;
+	$level = 0;
+	$flag  = 0;
+	$count = 0;
+
 	my $parser = XML::Parser->new(Handlers => { 
 									Start => \&start ,
 									Char  => \&char,
 									End   => \&end ,
-								  } );
+								  } , 'Non-Expat-Options' => { callback => $callback });
 
 	$parser->parse($source);
 
-	$stack[0];
+	if (defined $callback) {
+		$count;
+	}
+	else {
+		$stack[0];
+	}
 }     
 
 sub parse_json {
-	my ($self, $source) = @_;
-	my $json_txt;
+	my ($self, $source, $callback) = @_;
 
-	if (ref $source) {
-		local $/;
-		$json_txt = <$source>;
+	if (ref($source) =~ /^IO::/) {
+		if (defined $callback) {
+			my $count = 0;
+			while(<$source>) {
+				$callback->(_parse_json($_));
+				$count++;
+			}
+			$count;
+		}
+		else {
+			local $/;
+			my $json_txt = <$source>;
+			_parse_json($json_txt);
+		}
+	}
+	elsif (defined $callback) {
+		my $count = 0;
+		for (split(/\n/,$source)) {
+			$callback->(_parse_json($_));
+			$count++;
+		}
+		$count;
 	}
 	else {
-		$json_txt = $source;
+		_parse_json($source);
 	}
+}
 
+sub _parse_json {
+	my $json_txt = shift;
 	my $perl = decode_json($json_txt);
 
 	_bless_object($perl);
@@ -2386,6 +2451,7 @@ sub char {
 sub end {
 	my ($expat,$element,%attrs) = @_;
 	my $local_name = $element; $local_name =~ s/^\w+://;
+    my $callback = $expat->{'Non-Expat-Options'}->{'callback'};
 
 	if ($level) {
 		$body .= "</$element>";
@@ -2401,7 +2467,13 @@ sub end {
 
 		$body = undef;
 	
-		pop(@stack) unless @stack == 1;
+		if ($local_name eq 'mods' && defined $callback) {
+			$count++;
+			$callback->(pop(@stack));
+		}
+		else {
+			pop(@stack) unless @stack == 1;
+		}
 	}
 }
 

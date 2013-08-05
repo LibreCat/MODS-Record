@@ -11,4 +11,4 @@ t/00_load.t
 t/01_mods.t
 t/mods.json
 t/mods.xml
-t/mods_out.xml
+t/mods_multiple.json
