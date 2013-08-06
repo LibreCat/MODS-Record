@@ -6,7 +6,8 @@ MODS::Record - Perl extension for handling MODS records
 
 =head1 SYNOPSIS
 
- use MODS::Record qw(xml_string);
+ use MODS::Record qw(xml_string); 
+ use open qw(:utf8);
 
  my $mods = MODS::Record->new;
 
@@ -236,7 +237,7 @@ as perl itself. See L<http://dev.perl.org/licenses/>.
 =cut
 
 use vars qw( $VERSION );
-$VERSION = '0.05';
+$VERSION = '0.06';
 
 use Exporter;
 our @ISA = qw(Exporter);
@@ -2369,7 +2370,7 @@ sub parse_json {
 
 sub _parse_json {
 	my $json_txt = shift;
-	my $perl = decode_json($json_txt);
+	my $perl = JSON->new->utf8(0)->decode($json_txt);
 
 	_bless_object($perl);
 

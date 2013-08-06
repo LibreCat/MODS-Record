@@ -1,5 +1,8 @@
 Revision history for perl module MODS::Record
 
+0.06 2013-08-06
+    - Fixing UTF-8 handling of JSON
+
 0.05 2013-08-05
     - Adding Changes file
     - Adding support for callback function in from_xml, from_json

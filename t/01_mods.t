@@ -2,10 +2,11 @@
 
 use strict;
 
-use Test::More tests=>57;
+use Test::More tests=>63;
 
 use MODS::Record qw(xml_string);
 use IO::File;
+use open qw(:utf8);
 
 my $mods;
 
@@ -92,3 +93,15 @@ is($obj->get_titleInfo->get_title,"Telescope Peak from Zabriskie Point","titleIn
 
 is(MODS::Record->from_xml(IO::File->new("t/mods.xml"), sub { $obj = shift}),1,"from_xml (callback");
 is($obj->get_titleInfo->get_title,"Telescope Peak from Zabriskie Point","titleInfo/title");
+
+$mods = MODS::Record->new;
+$mods->add_abstract("中华人民共和国");
+ok($json = $mods->as_json, "UTF-8 json");
+ok($mods = MODS::Record->from_json($json),"UTF-8 parse");
+is($mods->get_abstract,"中华人民共和国","read abstract");
+
+$mods = MODS::Record->new;
+$mods->add_abstract("中华人民共和国");
+ok($xml = $mods->as_xml, "UTF-8 xml");
+ok($xml = MODS::Record->from_xml($xml),"UTF-8 parse");
+is($mods->get_abstract,"中华人民共和国","read abstract");
