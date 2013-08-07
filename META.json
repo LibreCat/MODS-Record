@@ -28,7 +28,7 @@
       "runtime" : {
          "requires" : {
             "Carp" : "0",
-            "IO::file" : "0",
+            "IO::File" : "0",
             "JSON" : "0",
             "Moo" : "0",
             "XML::Parser" : "0",
@@ -345,7 +345,7 @@
       },
       "MODS::Record" : {
          "file" : "lib/MODS/Record.pm",
-         "version" : "0.05"
+         "version" : "0.06"
       },
       "MODS::Record::Unique" : {
          "file" : "lib/MODS/Record.pm"
@@ -363,5 +363,5 @@
          "http://dev.perl.org/licenses/"
       ]
    },
-   "version" : "0.05"
+   "version" : "0.06"
 }

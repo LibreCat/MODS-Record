@@ -476,10 +476,10 @@ sub as_xml {
 	$output .= "<mods:$class";
 
 	if ($class eq 'mods' || $class eq 'modsCollection' ) {
-		$output .= ' xmlns:mods="http://www.loc.gov/mods/v3"';
-		$output .= ' xmlns:xlink="http://www.w3.org/1999/xlink"';
-		$output .= ' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"';
-		$output .= ' xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-5.xsd"';
+		$output .= q{ xmlns:mods="http://www.loc.gov/mods/v3"};
+		$output .= q{ xmlns:xlink="http://www.w3.org/1999/xlink"};
+		$output .= q{ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"};
+		$output .= q{ xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-5.xsd"};
 	}
 
 	for my $key (keys %$self) {
