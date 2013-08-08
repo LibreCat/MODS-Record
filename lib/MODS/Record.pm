@@ -237,7 +237,7 @@ as perl itself. See L<http://dev.perl.org/licenses/>.
 =cut
 
 use vars qw( $VERSION );
-$VERSION = '0.06';
+$VERSION = '0.07';
 
 use Exporter;
 our @ISA = qw(Exporter);
@@ -469,17 +469,17 @@ sub as_xml {
 	my $class = ref $self; 
 	$class =~ s{^(.*)::(.)(.*)}{lc($2) . $3}e;
 
-	my $encoding = $opts{'encoding'} // 'UTF-8';
+	my $encoding = $opts{'encoding'} || 'UTF-8';
 
 	$output .= "<?xml version=\"1.0\" encoding=\"$encoding\"?>\n" if $opts{'xml_prolog'};
 
 	$output .= "<mods:$class";
 
 	if ($class eq 'mods' || $class eq 'modsCollection' ) {
-		$output .= q{ xmlns:mods="http://www.loc.gov/mods/v3"};
-		$output .= q{ xmlns:xlink="http://www.w3.org/1999/xlink"};
-		$output .= q{ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"};
-		$output .= q{ xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-5.xsd"};
+		$output .= ' xmlns:mods="http://www.loc.gov/mods/v3"';
+		$output .= ' xmlns:xlink="http://www.w3.org/1999/xlink"';
+		$output .= ' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"';
+		$output .= ' xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-5.xsd"';
 	}
 
 	for my $key (keys %$self) {

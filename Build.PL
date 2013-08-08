@@ -14,7 +14,7 @@ my $build = Module::Build->new(
         'Test::More' => '0.98',
     },
     requires => {
-        'perl' => '5.8.0',
+        'perl' => '5.8.3',
         'Moo' => 0,
         'JSON' => 0,
         'Carp' => 0,
