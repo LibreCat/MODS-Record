@@ -23,9 +23,9 @@ MODS::Record - Perl extension for handling MODS records
 
  # Set a list of deeply nested fields...
  $mods->add_location(sub {
-	$_[0]->add_physicalLocation('here');
-	$_[0]->add_shelfLocation('here too');
-	$_[0]->add_url('http://here.org/there');
+    $_[0]->add_physicalLocation('here');
+    $_[0]->add_shelfLocation('here too');
+    $_[0]->add_url('http://here.org/there');
  }); 
 
  # Set an inline XML extension...
@@ -36,13 +36,13 @@ MODS::Record - Perl extension for handling MODS records
  $mods->get_abstract(lang => 'fra')->contentType('text/plain');
 
  for ($mods->get_abstract(lang => 'fra')) {
-	printf "%s\n" , $_->body;
+    printf "%s\n" , $_->body;
  }
 
  # Set a field to a new value
  my @newabstract;
  for ($mods->get_abstract) {
-	push @newabstract, $_ unless $_->lang eq 'fra';
+    push @newabstract, $_ unless $_->lang eq 'fra';
  }
  $mods->set_abstract(@newabstract);
 
@@ -58,13 +58,13 @@ MODS::Record - Perl extension for handling MODS records
  my $mods = MODS::Record->from_json(IO::File->new('mods.js'));
 
  my $count = MODS::Record->from_xml(IO::File->new('mods.xml'), sub {
-	my $mods = shift;
-	...	
+    my $mods = shift;
+    ... 
  });
 
  my $count = MODS::Record->from_json(IO::File->new('mods.js'), sub {
-	my $mods = shift;
-	...	
+    my $mods = shift;
+    ... 
  });
 
 =head1 DESCRIPTION
@@ -102,9 +102,9 @@ Add a new element to the record where 'xxx' is the name of a MODS element. The p
 of the added MODS element. This method returns an instance of the added MODS element. E.g.
 
  $mods->add_abstract(sub {
-	my $o = shift;
-	$o->body("My abstract");
-	$o->lang("eng");
+    my $o = shift;
+    $o->body("My abstract");
+    $o->lang("eng");
  })
 
 =head2 add_xxx($obj)
@@ -113,7 +113,7 @@ Add a new element to the record where 'xxx' is the name of a MODS element. The $
 class (where Xxx is the corresponding MODS element). This method returns an instance of the added MODS element. E.g.
 
  $mods->add_abstract(
- 	MODS::Element::Abstract->new(_body=>'My abstract', lang=>'eng')
+    MODS::Element::Abstract->new(_body=>'My abstract', lang=>'eng')
  );
 
 =head2 get_xxx()
@@ -168,7 +168,7 @@ The method returns the number of parsed MODS elements.
     my $mods = MODS::Record->from_xml( IO::File->new(...) );
 
     my $count = MODS::Record->from_xml( IO::File->new(...) , sub { 
-    	my $mods = shift;
+        my $mods = shift;
     } );
 
 =head2 as_json()
@@ -191,7 +191,7 @@ The method returns the number of parsed strings.
     my $mods = MODS::Record->from_json( IO::File->new(...) );
 
     my $count = MODS::Record->from_json( IO::File->new(...) , sub { 
-    	my $mods = shift;
+        my $mods = shift;
     } );
 
 =head1 SEE ALSO
@@ -244,24 +244,41 @@ our @ISA = qw(Exporter);
 our @EXPORT_OK = qw(xml_string);
 
 sub new {
-	my ($class,@opts) = @_;
-
-	return MODS::Element::Mods->new(@opts);
+    my ($class, @opts) = @_;
+    MODS::Element::Mods->new(@opts);
 }
 
 sub from_xml {
-	my ($self,@opts) = @_;
-	MODS::Parser->new->parse(@opts);
+    my ($self, $source, $cb) = @_;
+    my $parser = MODS::Parser::XML->new($source);
+    if ($cb) {
+        my $count = 0;
+        while (defined(my $rec = $parser->next)) {
+            $cb->($rec);
+            $count++;
+        }
+        return $count;
+    }
+    return $parser;
 }
 
 sub from_json {
-	my ($self,@opts) = @_;
-	MODS::Parser->new->parse_json(@opts);
+    my ($self, $source, $cb) = @_;
+    my $parser = MODS::Parser::JSON->new($source);
+    if ($cb) {
+        my $count = 0;
+        while (defined(my $rec = $parser->next)) {
+            $cb->($rec);
+            $count++;
+        }
+        return $count;
+    }
+    return $parser;
 }
 
 sub xml_string {
-	my $string = shift;
-	return MODS::Record::Xml_String->new(_body => $string);
+    my $string = shift;
+    return MODS::Record::Xml_String->new(_body => $string);
 }
 
 package MODS::Collection;
@@ -271,24 +288,24 @@ our @ISA = qw(Exporter);
 our @EXPORT_OK = qw(xml_string);
 
 sub new {
-	my ($class,@opts) = @_;
+    my ($class,@opts) = @_;
 
-	return MODS::Element::ModsCollection->new(@opts);
+    return MODS::Element::ModsCollection->new(@opts);
 }
 
 sub from_xml {
-	my ($self,@opts) = @_;
-	MODS::Parser->new->parse(@opts);
+    my ($self,@opts) = @_;
+    MODS::Parser->new->parse(@opts);
 }
 
 sub from_json {
-	my ($self,@opts) = @_;
-	MODS::Parser->new->parse_json(@opts);
+    my ($self,@opts) = @_;
+    MODS::Parser->new->parse_json(@opts);
 }
 
 sub xml_string {
-	my $string = shift;
-	return MODS::Record::Xml_String->new(_body => $string);
+    my $string = shift;
+    return MODS::Record::Xml_String->new(_body => $string);
 }
 
 
@@ -299,241 +316,241 @@ use Carp;
 use JSON;
 
 sub AUTOLOAD {
-	my ($self,@args) = @_;
+    my ($self,@args) = @_;
 
-	my ($meth) = (our $AUTOLOAD =~ /([^:]+)$/);
+    my ($meth) = (our $AUTOLOAD =~ /([^:]+)$/);
 
-	if ($meth =~ /^add_(\w+)/) {
-		my ($attrib) = $1;
+    if ($meth =~ /^add_(\w+)/) {
+        my ($attrib) = $1;
 
-		die "no such method $attrib" unless $self->can($attrib);
+        die "no such method $attrib" unless $self->can($attrib);
 
-		return $self->_adder($attrib,@args);
-	}
-	elsif ($meth =~ /^get_(\w+)/) {
-		my ($attrib) = $1;
+        return $self->_adder($attrib,@args);
+    }
+    elsif ($meth =~ /^get_(\w+)/) {
+        my ($attrib) = $1;
 
-		die "no such method $attrib" unless $self->can($attrib);
+        die "no such method $attrib" unless $self->can($attrib);
 
-		return $self->_getter($attrib,@args);
-	}
-	elsif ($meth =~ /^set_(\w+)/) {
-		my ($attrib) = $1;
+        return $self->_getter($attrib,@args);
+    }
+    elsif ($meth =~ /^set_(\w+)/) {
+        my ($attrib) = $1;
 
-		die "no such method $attrib" unless $self->can($attrib);
+        die "no such method $attrib" unless $self->can($attrib);
 
-		return $self->_setter($attrib,@args);
-	}
+        return $self->_setter($attrib,@args);
+    }
 }
 
 sub escape {
-	my $str = shift;
-	return "" unless defined $str;
-	$str =~ s{&}{&amp;}g;
-	$str =~ s{"}{&quot;}g;
-	$str =~ s{'}{&apos;}g;
-	$str =~ s{<}{&lt;}g;
-	$str =~ s{>}{&gt;}g;
+    my $str = shift;
+    return "" unless defined $str;
+    $str =~ s{&}{&amp;}g;
+    $str =~ s{"}{&quot;}g;
+    $str =~ s{'}{&apos;}g;
+    $str =~ s{<}{&lt;}g;
+    $str =~ s{>}{&gt;}g;
     $str;
 }
 
 sub _getter {
-	my ($self, $attrib, $where, %guard);
+    my ($self, $attrib, $where, %guard);
 
-	if (@_ % 2 == 0) {
-		($self, $attrib, %guard) = @_;
-	}
-	else {
-	    ($self, $attrib, $where) = @_;
-	}
+    if (@_ % 2 == 0) {
+        ($self, $attrib, %guard) = @_;
+    }
+    else {
+        ($self, $attrib, $where) = @_;
+    }
 
-	my @ret = ();
+    my @ret = ();
 
-	for (@{ $self->$attrib }) {
-		if (ref $where eq 'CODE') {
-			push(@ret,$_) if $where->($_);
-		}
-		else {
-			my $ok = 1;
-			for my $k (keys %guard) {
-				my $val = $guard{$k};
-				$ok = 0 unless (defined $_->$k && $_->$k eq $val);
-			}
-			push(@ret,$_) if $ok == 1;
-		}
-	}
+    for (@{ $self->$attrib }) {
+        if (ref $where eq 'CODE') {
+            push(@ret,$_) if $where->($_);
+        }
+        else {
+            my $ok = 1;
+            for my $k (keys %guard) {
+                my $val = $guard{$k};
+                $ok = 0 unless (defined $_->$k && $_->$k eq $val);
+            }
+            push(@ret,$_) if $ok == 1;
+        }
+    }
 
-	wantarray ? @ret : $ret[0];
+    wantarray ? @ret : $ret[0];
 }
 
 sub _setter {
-	my ($self, $attrib, @objs) = @_;
-	my $ret;
+    my ($self, $attrib, @objs) = @_;
+    my $ret;
 
-	if (@objs == 0) {
-		$ret = $self->$attrib;
-	}	
-	elsif (@objs == 1 && ref($objs[0]) eq 'ARRAY') {
-		$self->$attrib($objs[0]);
-		$ret = $objs[0];
-	}
-	elsif (@objs == 1 && !defined $objs[0]) {
-		$self->$attrib([]);
-		$ret = [];
-	}
-	else {
-		$self->$attrib(\@objs);
-		$ret = \@objs;
-	}
+    if (@objs == 0) {
+        $ret = $self->$attrib;
+    }   
+    elsif (@objs == 1 && ref($objs[0]) eq 'ARRAY') {
+        $self->$attrib($objs[0]);
+        $ret = $objs[0];
+    }
+    elsif (@objs == 1 && !defined $objs[0]) {
+        $self->$attrib([]);
+        $ret = [];
+    }
+    else {
+        $self->$attrib(\@objs);
+        $ret = \@objs;
+    }
 
-	wantarray ? @$ret : $ret;
+    wantarray ? @$ret : $ret;
 }
 
 sub _adder {
-	my ($self, $attrib, $obj,%opts);
+    my ($self, $attrib, $obj,%opts);
 
-	if (@_ % 2 == 0) {
-	 	($self, $attrib,%opts) = @_;
-	}
-	else {
-		($self, $attrib, $obj,%opts) = @_;
-	}
+    if (@_ % 2 == 0) {
+        ($self, $attrib,%opts) = @_;
+    }
+    else {
+        ($self, $attrib, $obj,%opts) = @_;
+    }
 
-	my $class = $attrib; 
-	$class =~ s{^(.)}{uc($1)}e;
-	$class = "MODS::Element::$class";
+    my $class = $attrib; 
+    $class =~ s{^(.)}{uc($1)}e;
+    $class = "MODS::Element::$class";
 
-	if (ref $obj eq 'CODE') {
-		my $sub = $obj;
-		$obj = $class->new(%opts);
-		my $ref = $self->$attrib;
-		push (@$ref,$obj);
-		$self->$attrib($ref);
-		$sub->($obj);
-	}
-	elsif (ref $obj eq $class) {
-		my $ref = $self->$attrib;
-		push (@$ref,$obj);
-		$self->$attrib($ref);
-	}
-	elsif (defined $obj && $class->can('_body')) {
-		$obj = $class->new(_body => $obj, %opts);
-		my $ref = $self->$attrib;
-		push (@$ref,$obj);
-		$self->$attrib($ref);
-	}
-	elsif (! defined $obj) {
-		$obj = $class->new(%opts);
-		my $ref = $self->$attrib;
-		push (@$ref,$obj);
-		$self->$attrib($ref);
-	}
-	else {
-		croak "eek: self($self) class($class) obj($obj)";
-	}
+    if (ref $obj eq 'CODE') {
+        my $sub = $obj;
+        $obj = $class->new(%opts);
+        my $ref = $self->$attrib;
+        push (@$ref,$obj);
+        $self->$attrib($ref);
+        $sub->($obj);
+    }
+    elsif (ref $obj eq $class) {
+        my $ref = $self->$attrib;
+        push (@$ref,$obj);
+        $self->$attrib($ref);
+    }
+    elsif (defined $obj && $class->can('_body')) {
+        $obj = $class->new(_body => $obj, %opts);
+        my $ref = $self->$attrib;
+        push (@$ref,$obj);
+        $self->$attrib($ref);
+    }
+    elsif (! defined $obj) {
+        $obj = $class->new(%opts);
+        my $ref = $self->$attrib;
+        push (@$ref,$obj);
+        $self->$attrib($ref);
+    }
+    else {
+        croak "eek: self($self) class($class) obj($obj)";
+    }
 
-	if ($obj->does('MODS::Record::Unique')) {
-		my $ref = $self->$attrib;
-		$self->$attrib([$ref->[-1]]);
-	}
+    if ($obj->does('MODS::Record::Unique')) {
+        my $ref = $self->$attrib;
+        $self->$attrib([$ref->[-1]]);
+    }
 
-	$obj;
+    $obj;
 }
 
 sub _isa {
-	my $type = shift;
+    my $type = shift;
 
-	die "Need an array of MODS::Element::*" unless ref $type eq 'ARRAY';
+    die "Need an array of MODS::Element::*" unless ref $type eq 'ARRAY';
 
-	for (@$type) {
-		die "Need a element of MODS::Element::*" unless ref($_) =~ /^MODS::Element::/;
-	}
+    for (@$type) {
+        die "Need a element of MODS::Element::*" unless ref($_) =~ /^MODS::Element::/;
+    }
 }
 
 sub body {
-	my ($self,$val) = @_;
+    my ($self,$val) = @_;
 
-	if ($self->can('_body')) {
-		$self->_body($val) if defined $val;
-		return $self->_body;
-	}
-	else {
-		return undef;
-	}
+    if ($self->can('_body')) {
+        $self->_body($val) if defined $val;
+        return $self->_body;
+    }
+    else {
+        return undef;
+    }
 }
 
 sub as_xml {
-	my ($self,%opts) = @_;
+    my ($self,%opts) = @_;
 
-	my $output = '';
-	my $class = ref $self; 
-	$class =~ s{^(.*)::(.)(.*)}{lc($2) . $3}e;
+    my $output = '';
+    my $class = ref $self; 
+    $class =~ s{^(.*)::(.)(.*)}{lc($2) . $3}e;
 
-	my $encoding = $opts{'encoding'} || 'UTF-8';
+    my $encoding = $opts{'encoding'} || 'UTF-8';
 
-	$output .= "<?xml version=\"1.0\" encoding=\"$encoding\"?>\n" if $opts{'xml_prolog'};
+    $output .= "<?xml version=\"1.0\" encoding=\"$encoding\"?>\n" if $opts{'xml_prolog'};
 
-	$output .= "<mods:$class";
+    $output .= "<mods:$class";
 
-	if ($class eq 'mods' || $class eq 'modsCollection' ) {
-		$output .= ' xmlns:mods="http://www.loc.gov/mods/v3"';
-		$output .= ' xmlns:xlink="http://www.w3.org/1999/xlink"';
-		$output .= ' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"';
-		$output .= ' xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-5.xsd"';
-	}
+    if ($class eq 'mods' || $class eq 'modsCollection' ) {
+        $output .= ' xmlns:mods="http://www.loc.gov/mods/v3"';
+        $output .= ' xmlns:xlink="http://www.w3.org/1999/xlink"';
+        $output .= ' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"';
+        $output .= ' xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-5.xsd"';
+    }
 
-	for my $key (keys %$self) {
-		my $val = $self->$key;
-		if ($key =~ /^_/) {
-			next;
-		}
-		elsif (ref $val eq '') {
-			$output .= " $key=\"" . escape($val) . "\"";
-		}
-	}
+    for my $key (keys %$self) {
+        my $val = $self->$key;
+        if ($key =~ /^_/) {
+            next;
+        }
+        elsif (ref $val eq '') {
+            $output .= " $key=\"" . escape($val) . "\"";
+        }
+    }
 
-	$output .= ">";
+    $output .= ">";
 
-	if ($self->can('_body')) {
-		if (ref $self->_body && $self->_body->can('as_xml')) {
-			$output .= $self->_body->as_xml;
-		}
-		else {
-			$output .= escape($self->_body);
-		}
-	}
+    if ($self->can('_body')) {
+        if (ref $self->_body && $self->_body->can('as_xml')) {
+            $output .= $self->_body->as_xml;
+        }
+        else {
+            $output .= escape($self->_body);
+        }
+    }
 
-	for my $key (keys %$self) {
-		my $val = $self->$key;
-		
-		if ($key =~ /^_/ || ref $val ne 'ARRAY') {
-			next;
-		}
+    for my $key (keys %$self) {
+        my $val = $self->$key;
+        
+        if ($key =~ /^_/ || ref $val ne 'ARRAY') {
+            next;
+        }
 
-		for (@{ $self->$key} ) {
-			$output .= $_->as_xml;
-		}
-	}
+        for (@{ $self->$key} ) {
+            $output .= $_->as_xml;
+        }
+    }
 
-	$output .= "</mods:$class>";
-	$output;
+    $output .= "</mods:$class>";
+    $output;
 }
 
 sub as_json {
-	my ($self, %opts) = @_;
-	my $class = ref $self; 
-	$class =~ s{^(.*)::(.)(.*)}{lc($2) . $3}e;
-	to_json({$class => $self}, { convert_blessed => 1 , allow_blessed => 1 , pretty => $opts{pretty}});
+    my ($self, %opts) = @_;
+    my $class = ref $self; 
+    $class =~ s{^(.*)::(.)(.*)}{lc($2) . $3}e;
+    to_json({$class => $self}, { convert_blessed => 1 , allow_blessed => 1 , pretty => $opts{pretty}});
 }
 
 sub TO_JSON { 
-	my $ret = { %{ shift() } };
-	for (keys %$ret) {
-		if (ref $ret->{$_} eq 'ARRAY' && @{$ret->{$_}} == 0) {
-			delete $ret->{$_};
-		}
-	}
-	$ret;
+    my $ret = { %{ shift() } };
+    for (keys %$ret) {
+        if (ref $ret->{$_} eq 'ARRAY' && @{$ret->{$_}} == 0) {
+            delete $ret->{$_};
+        }
+    }
+    $ret;
 }
 
 package MODS::Record::Unique;
@@ -549,8 +566,8 @@ use overload fallback => 1 , '""' => sub { $_[0]->_body };
 has _body => (is => 'ro');
 
 sub as_xml {
-	my $self = shift;
-	$self->_body;
+    my $self = shift;
+    $self->_body;
 }
 
 sub TO_JSON { return shift->_body; }
@@ -899,7 +916,7 @@ has ID              => ( is => 'rw' );
 has displayLabel    => ( is => 'rw' );
 has type            => ( is => 'rw' );
 has typeURI         => ( is => 'rw' );
-has altRepGroup	    => ( is => 'rw' );
+has altRepGroup     => ( is => 'rw' );
 has xlink           => ( is => 'rw' );
 
 has _body           => ( is => 'rw' );
@@ -1060,7 +1077,7 @@ has eventType       => ( is => 'rw' );
 has place           => ( is => 'rw' , isa => \&_isa , default => sub { [] });
 has publisher       => ( is => 'rw' , isa => \&_isa , default => sub { [] });
 has dateIssued      => ( is => 'rw' , isa => \&_isa , default => sub { [] });
-has dateCreated		=> ( is => 'rw' , isa => \&_isa , default => sub { [] });
+has dateCreated     => ( is => 'rw' , isa => \&_isa , default => sub { [] });
 has dateCaptured    => ( is => 'rw' , isa => \&_isa , default => sub { [] });
 has dateValid       => ( is => 'rw' , isa => \&_isa , default => sub { [] });
 has dateModified    => ( is => 'rw' , isa => \&_isa , default => sub { [] });
@@ -2300,193 +2317,223 @@ has mods            => ( is => 'rw' , isa => \&_isa , default => sub { [] });
 
 package MODS::Parser;
 
+use strict;
+use warnings;
+use IO::File ();
+use IO::String ();
+use Moo::Role;
+
+with 'MODS::Record::Util';
+
+requires '_get_next_record';
+
+has _fh => (
+    is => 'ro',
+    required => 1,
+);
+
+has _next_record => (
+    is => 'rw',
+    writer => '_set_next_record',
+);
+
+has count => (
+    is => 'rw',
+    writer => '_set_count',
+    default => sub { 0 },
+);
+
+sub BUILDARGS {
+    my ($class, $source) = @_;
+    my $args = {};
+    if (ref $source) {
+        if (ref $source eq 'SCALAR') {
+            $args->{_fh} = IO::String->new($$source);
+        } else {
+            $args->{_fh} = $source;
+        }
+    } elsif (defined $source) {
+        my $fh = IO::File->new;
+        $fh->open($source, 'r');
+        $args->{_fh} = $fh;
+    }
+    $args;
+}
+
+sub has_next {
+    my ($self) = @_;
+    defined $self->_next_record;
+}
+
+sub next {
+    my ($self) = @_;
+    if (defined(my $rec = $self->_next_record)) {
+        $self->_set_count($self->count + 1);
+        $self->_set_next_record($self->_get_next_record);
+        return $rec;
+    }
+    return;
+}
+
+sub _bless_record {
+    my ($self, $rec) = @_;
+
+    return unless ref($rec) =~ /^HASH|MODS::Element/;
+
+    for (keys %$rec) {
+        my $val = $rec->{$_};
+        my $class = 'MODS::Element::'.ucfirst($_);
+
+        if (ref($val) eq 'ARRAY') {
+            for (@{$val}) {
+                $self->_bless_record(bless($_, $class));
+            }
+        } elsif (ref($val) eq 'HASH') {
+            $self->_bless_record(bless($val, $class));
+        }
+    }
+}
+
+package MODS::Parser::JSON;
+
+use strict;
+use warnings;
+use JSON ();
 use Moo;
-use XML::Parser;
-use JSON;
 
-with('MODS::Record::Util');
+with 'MODS::Parser';
 
-our @stack = ();
-our $body;
-our $level = 0;
-our $flag  = 0;
-our $count = 0;
+has _json_parser => (is => 'ro', lazy => 1, builder => '_build_json_parser');
 
-sub parse {
-	my ($self,$source,$callback) = @_;
-
-	@stack = ();
-	$body  = undef;
-	$level = 0;
-	$flag  = 0;
-	$count = 0;
-
-	my $parser = XML::Parser->new(Handlers => { 
-									Start => \&start ,
-									Char  => \&char,
-									End   => \&end ,
-								  } , 'Non-Expat-Options' => { callback => $callback });
-
-	$parser->parse($source);
-
-	if (defined $callback) {
-		$count;
-	}
-	else {
-		$stack[0];
-	}
-}     
-
-sub parse_json {
-	my ($self, $source, $callback) = @_;
-
-	if (ref($source) =~ /^IO::/) {
-		if (defined $callback) {
-			my $count = 0;
-			while(<$source>) {
-				$callback->(_parse_json($_));
-				$count++;
-			}
-			$count;
-		}
-		else {
-			local $/;
-			my $json_txt = <$source>;
-			_parse_json($json_txt);
-		}
-	}
-	elsif (defined $callback) {
-		my $count = 0;
-		for (split(/\n/,$source)) {
-			$callback->(_parse_json($_));
-			$count++;
-		}
-		$count;
-	}
-	else {
-		_parse_json($source);
-	}
+sub _build_json_parser {
+    JSON->new->utf8(0);
 }
 
-sub _parse_json {
-	my $json_txt = shift;
-	my $perl = JSON->new->utf8(0)->decode($json_txt);
+sub _get_next_record {
+    my ($self) = @_;
 
-	_bless_object($perl);
-
-	[ %{ $perl } ]->[1];
+    if (defined(my $line = $self->fh->getline)) {
+        my $rec = $self->_json_parser->decode($line);
+        $self->_bless_record($rec);
+        return [%$rec]->[1];
+    }
+    return;
 }
 
-sub _bless_object {
-	my $obj = shift;
+package MODS::Parser::XML;
 
-	return unless ref($obj) =~ /^HASH|MODS::Element/;
+use strict;
+use warnings;
+use XML::TokeParser ();
+use Moo;
 
-	for (keys %$obj) {
-		my $val = $obj->{$_};
-		my $class = $_;
-		$class =~ s{^(.)}{uc($1)}e;
-		$class = "MODS::Element::$class";
+with 'MODS::Parser';
 
-		if (ref($val) eq 'ARRAY') {
-			for (@{$val}) {
-				_bless_object(bless($_,$class));
-			}
-		}
-		elsif (ref($val) eq 'HASH') {
-			_bless_object(bless($val,$class));
-		}
-	}
+has _xml_parser => (is => 'ro', lazy => 1, builder => '_build_xml_parser');
+
+sub _build_xml_parser {
+    my ($self) = @_;
+    XML::TokeParser->new($self->_fh);
 }
 
-sub start {
-	my ($expat,$element,%attrs) = @_;
-	my $local_name = $element; $local_name =~ s/^\w+://;
-	my $e;
-
-	if ($level) {
-		$level++;
-	}
-	elsif (@stack == 0) {
-		my $module = $local_name;
-		$module =~ s{^(.)}{uc($1)}e;
-		$module = "MODS::Element::$module";
-		$e = $module->new(%attrs);
-		$body = undef;
-		push(@stack,$e);
-	}
-	else {
-		my $method = "add_$local_name";
-		my $module = $local_name;
-		$module =~ s{^(.)}{uc($1)}e;
-		$module = "MODS::Element::$module";
-
-		# Start recording literal XML if we find an element we cant recognize...
-		if ($stack[-1]->can($local_name)) {
-			$e = $stack[-1]->$method($module->new(%attrs));
-			$body = undef;
-
-			push(@stack,$e);
-		}
-		else {
-			die "$element not allowed in " . ref($stack[-1]) unless ref($stack[-1]) =~ /^MODS::Element::(AccessCondition|Extension)$/;
-			$level++;
-		}
-	}
-
-	if ($level) {
-		$body .= "<$element";
-		for (keys %attrs) {
-			$body .= " $_=\"" . escape($attrs{$_}) . "\"";
-		}
-		$body .= ">";
-	}
+sub _get_next_record {
+    my ($self) = @_;
+    my $xml = $self->_xml_parser;
+    my $rec = {};
+    while (defined(my $tkn = $xml->get_token)) {
+        print $tkn->tag."\n";
+    }
+    return;
 }
 
-sub char {
-	my ($expat,$string) = @_;
+#sub start {
+    #my ($expat,$element,%attrs) = @_;
+    #my $local_name = $element; $local_name =~ s/^\w+://;
+    #my $e;
 
-	$body .= $string;
-}
+    #if ($level) {
+        #$level++;
+    #}
+    #elsif (@stack == 0) {
+        #my $module = $local_name;
+        #$module =~ s{^(.)}{uc($1)}e;
+        #$module = "MODS::Element::$module";
+        #$e = $module->new(%attrs);
+        #$body = undef;
+        #push(@stack,$e);
+    #}
+    #else {
+        #my $method = "add_$local_name";
+        #my $module = $local_name;
+        #$module =~ s{^(.)}{uc($1)}e;
+        #$module = "MODS::Element::$module";
 
-sub end {
-	my ($expat,$element,%attrs) = @_;
-	my $local_name = $element; $local_name =~ s/^\w+://;
-    my $callback = $expat->{'Non-Expat-Options'}->{'callback'};
+        ## Start recording literal XML if we find an element we cant recognize...
+        #if ($stack[-1]->can($local_name)) {
+            #$e = $stack[-1]->$method($module->new(%attrs));
+            #$body = undef;
 
-	if ($level) {
-		$body .= "</$element>";
-		$level--;
-		$flag = 1;
-	}
-	else {
-		$body = MODS::Record::Xml_String->new(_body => $body) if $flag;
-		
-		$flag = 0;
+            #push(@stack,$e);
+        #}
+        #else {
+            #die "$element not allowed in " . ref($stack[-1]) unless ref($stack[-1]) =~ /^MODS::Element::(AccessCondition|Extension)$/;
+            #$level++;
+        #}
+    #}
 
-		$stack[-1]->_body($body) if $stack[-1]->can('_body');
+    #if ($level) {
+        #$body .= "<$element";
+        #for (keys %attrs) {
+            #$body .= " $_=\"" . escape($attrs{$_}) . "\"";
+        #}
+        #$body .= ">";
+    #}
+#}
 
-		$body = undef;
-	
-		if ($local_name eq 'mods' && defined $callback) {
-			$count++;
-			$callback->(pop(@stack));
-		}
-		else {
-			pop(@stack) unless @stack == 1;
-		}
-	}
-}
+#sub char {
+    #my ($expat,$string) = @_;
 
-sub debug {
-	my $msg = shift;
-	print STDERR "$msg\n";
-	print STDERR "level: $level\n";
-	print STDERR "flag: $flag\n";
-	for (@stack) {
-		printf STDERR "%s\n" , ref $_;
-	}
-	print STDERR "---\n";
-}
+    #$body .= $string;
+#}
+
+#sub end {
+    #my ($expat,$element,%attrs) = @_;
+    #my $local_name = $element; $local_name =~ s/^\w+://;
+    #my $callback = $expat->{'Non-Expat-Options'}->{'callback'};
+
+    #if ($level) {
+        #$body .= "</$element>";
+        #$level--;
+        #$flag = 1;
+    #}
+    #else {
+        #$body = MODS::Record::Xml_String->new(_body => $body) if $flag;
+        
+        #$flag = 0;
+
+        #$stack[-1]->_body($body) if $stack[-1]->can('_body');
+
+        #$body = undef;
+    
+        #if ($local_name eq 'mods' && defined $callback) {
+            #$count++;
+            #$callback->(pop(@stack));
+        #}
+        #else {
+            #pop(@stack) unless @stack == 1;
+        #}
+    #}
+#}
+
+#sub debug {
+    #my $msg = shift;
+    #print STDERR "$msg\n";
+    #print STDERR "level: $level\n";
+    #print STDERR "flag: $flag\n";
+    #for (@stack) {
+        #printf STDERR "%s\n" , ref $_;
+    #}
+    #print STDERR "---\n";
+#}
 
 1;
