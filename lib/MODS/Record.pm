@@ -216,6 +216,14 @@ But each sub-element keeps its original order (e.g. each 'title' in 'titleInfo')
 
 =back
 
+=head1 CONTRIBUTORS
+
+=over 4
+
+=item * Nicolas Steenlant <Nicolas . Steenlant at UGent . be>
+
+=back
+
 =head1 LICENSE
 
 This library is free software and may be distributed under the same terms
