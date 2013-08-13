@@ -1,12 +1,13 @@
-#!perl -Tw
+#!perl
 
 use strict;
-
-use Test::More tests=>63;
-
-use MODS::Record qw(xml_string);
-use IO::File;
+use warnings;
 use open qw(:utf8);
+use utf8;
+use Test::More tests => 64;
+use MODS::Record qw(xml_string);
+use IO::String ();
+use IO::File ();
 
 my $mods;
 
@@ -70,11 +71,14 @@ is(@access = $mods->set_accessCondition(MODS::Element::AccessCondition->new(_bod
 is(@access = $mods->set_accessCondition([MODS::Element::AccessCondition->new(_body=>'test')]),1,"set accessCondition");
 
 my $collection;
-ok($collection = MODS::Record->from_xml(IO::File->new("t/mods.xml")),"from_xml");
+ok($collection = MODS::Collection->from_xml(IO::File->new("t/mods.xml")),"from_xml");
 is($collection->get_mods->get_titleInfo->get_title,"Telescope Peak from Zabriskie Point","titleInfo/title");
 is($collection->get_mods->get_titleInfo(type=>'alternative')->get_title,"Telescope PK from Zabriskie Pt.","titleInfo[type=\"alternative\"]/title");
 
-ok($collection = MODS::Record->from_json(IO::File->new("t/mods.json")),"from_json");
+undef $collection; #closes file
+
+$collection = MODS::Collection->from_json(IO::File->new("t/mods_multiple.json"));
+isa_ok($collection, "MODS::Element::ModsCollection", "collection from_json");
 is($collection->get_mods->get_titleInfo->get_title,"Telescope Peak from Zabriskie Point","titleInfo/title");
 is($collection->get_mods->get_titleInfo(type=>'alternative')->get_title,"Telescope PK from Zabriskie Pt.","titleInfo[type=\"alternative\"]/title");
 
@@ -87,22 +91,36 @@ ok($json = $collection->as_json,"as_json");
 ok($json = $collection->get_mods->as_json,"as_json (element)");
 ok($json = $collection->get_mods->get_titleInfo->as_json,"as_json (element)");
 
+undef $collection; #closes file
+
 my $obj;
-is(MODS::Record->from_json(IO::File->new("t/mods_multiple.json"),sub { $obj = shift }),2,"from_json (callback)");
+
+$obj = MODS::Record->from_json(IO::File->new("t/mods_multiple.json"));
+isa_ok($obj, "MODS::Element::Mods", "record from_json");
 is($obj->get_titleInfo->get_title,"Telescope Peak from Zabriskie Point","titleInfo/title");
 
-#is(MODS::Record->from_xml(IO::File->new("t/mods.xml"), sub { $obj = shift}),1,"from_xml (callback");
-#is($obj->get_titleInfo->get_title,"Telescope Peak from Zabriskie Point","titleInfo/title");
+undef $obj; #closes file
 
-#$mods = MODS::Record->new;
-#$mods->add_abstract("中华人民共和国");
-#ok($json = $mods->as_json, "UTF-8 json");
-#ok($mods = MODS::Record->from_json($json),"UTF-8 parse");
-#is($mods->get_abstract,"中华人民共和国","read abstract");
+$obj = MODS::Record->from_json("t/mods_multiple.json");
+isa_ok($obj, "MODS::Element::Mods","record from_json (file path)");
 
-#$mods = MODS::Record->new;
-#$mods->add_abstract("中华人民共和国");
-#ok($xml = $mods->as_xml, "UTF-8 xml");
-#ok($xml = MODS::Record->from_xml($xml),"UTF-8 parse");
-#is($mods->get_abstract,"中华人民共和国","read abstract");
+undef $obj; #closes file
+
+$obj = MODS::Record->from_xml(IO::File->new("t/mods.xml"));
+isa_ok($obj,"MODS::Element::Mods","record from_xml");
+is($obj->get_titleInfo->get_title,"Telescope Peak from Zabriskie Point","titleInfo/title");
+
+undef $obj; #closes file
+
+$mods = MODS::Record->new;
+$mods->add_abstract("中华人民共和国");
+ok($json = $mods->as_json,"UTF-8 json");
+isa_ok($mods = MODS::Record->from_json(IO::String->new(\$json)),"MODS::Element::Mods","UTF-8 parse");
+is($mods->get_abstract,"中华人民共和国","read abstract");
+
+$mods = MODS::Record->new;
+$mods->add_abstract("中华人民共和国");
+ok($xml = $mods->as_xml, "UTF-8 xml");
+isa_ok($mods = MODS::Record->from_xml(IO::String->new(\$xml)),"MODS::Element::Mods","UTF-8 parse");
+is($mods->get_abstract,"中华人民共和国","read abstract");
 

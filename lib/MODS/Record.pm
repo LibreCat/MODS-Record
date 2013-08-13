@@ -249,31 +249,15 @@ sub new {
 }
 
 sub from_xml {
-    my ($self, $source, $cb) = @_;
+    my ($self, $source) = @_;
     my $parser = MODS::Parser::XML->new($source);
-    if ($cb) {
-        my $count = 0;
-        while (defined(my $rec = $parser->next)) {
-            $cb->($rec);
-            $count++;
-        }
-        return $count;
-    }
-    return $parser;
+    $parser->next;
 }
 
 sub from_json {
-    my ($self, $source, $cb) = @_;
+    my ($self, $source) = @_;
     my $parser = MODS::Parser::JSON->new($source);
-    if ($cb) {
-        my $count = 0;
-        while (defined(my $rec = $parser->next)) {
-            $cb->($rec);
-            $count++;
-        }
-        return $count;
-    }
-    return $parser;
+    $parser->next;
 }
 
 sub xml_string {
@@ -289,25 +273,33 @@ our @EXPORT_OK = qw(xml_string);
 
 sub new {
     my ($class,@opts) = @_;
-
     return MODS::Element::ModsCollection->new(@opts);
 }
 
 sub from_xml {
-    my ($self,@opts) = @_;
-    MODS::Parser->new->parse(@opts);
+    my ($self, $source) = @_;
+    my $parser = MODS::Parser::XML->new($source);
+    my $mods = [];
+    while ($parser->has_next) {
+        push @$mods, $parser->next;
+    }
+    MODS::Element::ModsCollection->new(mods => $mods);
 }
 
 sub from_json {
-    my ($self,@opts) = @_;
-    MODS::Parser->new->parse_json(@opts);
+    my ($self, $source) = @_;
+    my $parser = MODS::Parser::JSON->new($source);
+    my $mods = [];
+    while ($parser->has_next) {
+        push @$mods, $parser->next;
+    }
+    MODS::Element::ModsCollection->new(mods => $mods);
 }
 
 sub xml_string {
     my $string = shift;
     return MODS::Record::Xml_String->new(_body => $string);
 }
-
 
 package MODS::Record::Util;
 
@@ -538,12 +530,12 @@ sub as_xml {
 
 sub as_json {
     my ($self, %opts) = @_;
-    my $class = ref $self; 
+    my $class = ref $self;
     $class =~ s{^(.*)::(.)(.*)}{lc($2) . $3}e;
     to_json({$class => $self}, { convert_blessed => 1 , allow_blessed => 1 , pretty => $opts{pretty}});
 }
 
-sub TO_JSON { 
+sub TO_JSON {
     my $ret = { %{ shift() } };
     for (keys %$ret) {
         if (ref $ret->{$_} eq 'ARRAY' && @{$ret->{$_}} == 0) {
@@ -2311,19 +2303,16 @@ package MODS::Element::ModsCollection;
 
 use Moo;
 
-with('MODS::Record::Util');
+with 'MODS::Record::Util';
 
-has mods            => ( is => 'rw' , isa => \&_isa , default => sub { [] });
+has mods => (is => 'rw', isa => \&_isa, default => sub { [] });
 
 package MODS::Parser;
 
 use strict;
 use warnings;
 use IO::File ();
-use IO::String ();
 use Moo::Role;
-
-with 'MODS::Record::Util';
 
 requires '_get_next_record';
 
@@ -2347,17 +2336,19 @@ sub BUILDARGS {
     my ($class, $source) = @_;
     my $args = {};
     if (ref $source) {
-        if (ref $source eq 'SCALAR') {
-            $args->{_fh} = IO::String->new($$source);
-        } else {
-            $args->{_fh} = $source;
-        }
+        $args->{_fh} = $source;
     } elsif (defined $source) {
         my $fh = IO::File->new;
         $fh->open($source, 'r');
+        $fh->binmode(':utf8');
         $args->{_fh} = $fh;
     }
     $args;
+}
+
+sub BUILD {
+    my ($self) = @_;
+    $self->_set_next_record($self->_get_next_record);
 }
 
 sub has_next {
@@ -2412,7 +2403,8 @@ sub _build_json_parser {
 sub _get_next_record {
     my ($self) = @_;
 
-    if (defined(my $line = $self->fh->getline)) {
+    if (defined(my $line = $self->_fh->getline)) {
+        chomp($line);
         my $rec = $self->_json_parser->decode($line);
         $self->_bless_record($rec);
         return [%$rec]->[1];
@@ -2439,101 +2431,76 @@ sub _build_xml_parser {
 sub _get_next_record {
     my ($self) = @_;
     my $xml = $self->_xml_parser;
-    my $rec = {};
-    while (defined(my $tkn = $xml->get_token)) {
-        print $tkn->tag."\n";
+    my $tkn;
+    my $tag;
+    while (defined($tkn = $xml->get_token)) {
+        next unless $tkn->is_start_tag;
+        $tag = $tkn->tag;
+        $tag =~ s/^\w+://;
+        next unless $tag eq 'mods';
+
+        my @stack = ( MODS::Element::Mods->new($tkn->attr) );
+        my $level = 0;
+        my $body = "";
+        my $flag = 0;
+        while (defined($tkn = $xml->get_token)) {
+            if ($tkn->is_start_tag) {
+                $tag = $tkn->tag;
+                $tag =~ s/^\w+://;
+
+                my $method = "add_$tag";
+                my $module = 'MODS::Element::'.ucfirst($tag);
+
+                if ($level) {
+                    $level++;
+                }
+                elsif ($stack[-1]->can($tag)) {
+                    my $e = $stack[-1]->$method($module->new($tkn->attr));
+                    push(@stack, $e);
+                    $body = "";
+                }
+                # start recording literal XML if we find an element we cant recognize...
+                else {
+                    die $tkn->tag." not allowed in " . ref($stack[-1]) unless ref($stack[-1]) =~ /^MODS::Element::(AccessCondition|Extension)$/;
+                    $level++;
+                }
+
+                if ($level) {
+                    $body .= "<".$tkn->tag;
+                    for (@{$tag->attrseq}) {
+                        $body .= " $_=\"" . escape($tag->attr->{$_}) . "\"";
+                    }
+                    $body .= ">";
+                }
+            } elsif ($tkn->is_end_tag) {
+                $tag = $tkn->tag;
+                $tag =~ s/^\w+://;
+
+                if ($level) {
+                    $body .= "</".$tkn->tag.">";
+                    $level--;
+                    $flag = 1;
+                }
+                else {
+                    $body = MODS::Record::Xml_String->new(_body => $body) if $flag;
+                    $flag = 0;
+
+                    $stack[-1]->_body($body) if $stack[-1]->can('_body');
+                    $body = "";
+
+                    if ($tag eq 'mods') {
+                        return $stack[0];
+                    }
+                    else {
+                        pop(@stack);
+                    }
+                }
+            } elsif ($tkn->is_text) {
+                $body .= $tkn->text;
+            }
+        }
     }
     return;
 }
-
-#sub start {
-    #my ($expat,$element,%attrs) = @_;
-    #my $local_name = $element; $local_name =~ s/^\w+://;
-    #my $e;
-
-    #if ($level) {
-        #$level++;
-    #}
-    #elsif (@stack == 0) {
-        #my $module = $local_name;
-        #$module =~ s{^(.)}{uc($1)}e;
-        #$module = "MODS::Element::$module";
-        #$e = $module->new(%attrs);
-        #$body = undef;
-        #push(@stack,$e);
-    #}
-    #else {
-        #my $method = "add_$local_name";
-        #my $module = $local_name;
-        #$module =~ s{^(.)}{uc($1)}e;
-        #$module = "MODS::Element::$module";
-
-        ## Start recording literal XML if we find an element we cant recognize...
-        #if ($stack[-1]->can($local_name)) {
-            #$e = $stack[-1]->$method($module->new(%attrs));
-            #$body = undef;
-
-            #push(@stack,$e);
-        #}
-        #else {
-            #die "$element not allowed in " . ref($stack[-1]) unless ref($stack[-1]) =~ /^MODS::Element::(AccessCondition|Extension)$/;
-            #$level++;
-        #}
-    #}
-
-    #if ($level) {
-        #$body .= "<$element";
-        #for (keys %attrs) {
-            #$body .= " $_=\"" . escape($attrs{$_}) . "\"";
-        #}
-        #$body .= ">";
-    #}
-#}
-
-#sub char {
-    #my ($expat,$string) = @_;
-
-    #$body .= $string;
-#}
-
-#sub end {
-    #my ($expat,$element,%attrs) = @_;
-    #my $local_name = $element; $local_name =~ s/^\w+://;
-    #my $callback = $expat->{'Non-Expat-Options'}->{'callback'};
-
-    #if ($level) {
-        #$body .= "</$element>";
-        #$level--;
-        #$flag = 1;
-    #}
-    #else {
-        #$body = MODS::Record::Xml_String->new(_body => $body) if $flag;
-        
-        #$flag = 0;
-
-        #$stack[-1]->_body($body) if $stack[-1]->can('_body');
-
-        #$body = undef;
-    
-        #if ($local_name eq 'mods' && defined $callback) {
-            #$count++;
-            #$callback->(pop(@stack));
-        #}
-        #else {
-            #pop(@stack) unless @stack == 1;
-        #}
-    #}
-#}
-
-#sub debug {
-    #my $msg = shift;
-    #print STDERR "$msg\n";
-    #print STDERR "level: $level\n";
-    #print STDERR "flag: $flag\n";
-    #for (@stack) {
-        #printf STDERR "%s\n" , ref $_;
-    #}
-    #print STDERR "---\n";
-#}
 
 1;
