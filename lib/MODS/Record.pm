@@ -54,18 +54,16 @@ MODS::Record - Perl extension for handling MODS records
  print $mods->as_xml;
 
  # Deserialize
+ my $collection = MODS::Collection->from_xml(IO::File->new('mods.xml'));
+ my $collection = MODS::Collection->from_json(IO::File->new('mods.json'));
  my $mods = MODS::Record->from_xml(IO::File->new('mods.xml'));
- my $mods = MODS::Record->from_json(IO::File->new('mods.js'));
+ my $mods = MODS::Record->from_json(IO::File->new('mods.json'));
 
- my $count = MODS::Record->from_xml(IO::File->new('mods.xml'), sub {
-    my $mods = shift;
-    ... 
- });
-
- my $count = MODS::Record->from_json(IO::File->new('mods.js'), sub {
-    my $mods = shift;
-    ... 
- });
+my $iterator = MODS::Parser::XML->new('mods.xml');
+while ($iterator->has_next) {
+    my $record = $iterator->next;
+}
+my $num_records_read = $iterator->count;
 
 =head1 DESCRIPTION
 
@@ -155,21 +153,14 @@ element an ARRAY (ref) of MODS::Element::Xxx can be provided (where 'Xxx' is the
 
 Return the record as XML.
 
-=head2 from_xml($string [, $callback])
+=head2 from_xml($string)
 
-=head2 from_xml(IO::Handle [, $callback])
+=head2 from_xml(IO::Handle)
 
-Parse an XML string or IO::Handle into a MODS::Record. This method return the parsed JSON.
-
-If a callback function is provided then for each MODS element in the XML stream the callback will be called.
-The method returns the number of parsed MODS elements.
+Parse an XML string or IO::Handle into a MODS::Record. This method retiurn the parsed XML.
 
  E.g.
     my $mods = MODS::Record->from_xml( IO::File->new(...) );
-
-    my $count = MODS::Record->from_xml( IO::File->new(...) , sub { 
-        my $mods = shift;
-    } );
 
 =head2 as_json()
 
@@ -177,9 +168,9 @@ The method returns the number of parsed MODS elements.
 
 Return the record as JSON string.
 
-=head2 from_json($string [, $callback])
+=head2 from_json($string)
 
-=head2 from_json(IO::Handle [, $callback])
+=head2 from_json(IO::Handle)
 
 Parse and JSON string or JSON::Handle into a MODS::Record. This method return the parsed JSON.
 
@@ -189,10 +180,6 @@ The method returns the number of parsed strings.
 
  E.g.
     my $mods = MODS::Record->from_json( IO::File->new(...) );
-
-    my $count = MODS::Record->from_json( IO::File->new(...) , sub { 
-        my $mods = shift;
-    } );
 
 =head1 SEE ALSO
 
@@ -237,7 +224,7 @@ as perl itself. See L<http://dev.perl.org/licenses/>.
 =cut
 
 use vars qw( $VERSION );
-$VERSION = '0.07';
+$VERSION = '0.08';
 
 use Exporter;
 our @ISA = qw(Exporter);
