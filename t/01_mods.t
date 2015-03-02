@@ -2,7 +2,7 @@
 
 use strict;
 
-use Test::More tests=>63;
+use Test::More tests=>64;
 
 use MODS::Record qw(xml_string);
 use IO::File;
@@ -73,6 +73,7 @@ my $collection;
 ok($collection = MODS::Record->from_xml(IO::File->new("t/mods.xml")),"from_xml");
 is($collection->get_mods->get_titleInfo->get_title,"Telescope Peak from Zabriskie Point","titleInfo/title");
 is($collection->get_mods->get_titleInfo(type=>'alternative')->get_title,"Telescope PK from Zabriskie Pt.","titleInfo[type=\"alternative\"]/title");
+is($collection->get_mods->get_relatedItem(type=>'original')->get_location->get_shelfLocator,"381 J8223","relatedItem[type=\"original\"]/location/shelfLocator");
 
 ok($collection = MODS::Record->from_json(IO::File->new("t/mods.json")),"from_json");
 is($collection->get_mods->get_titleInfo->get_title,"Telescope Peak from Zabriskie Point","titleInfo/title");

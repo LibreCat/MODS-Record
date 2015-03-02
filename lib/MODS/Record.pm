@@ -24,7 +24,7 @@ MODS::Record - Perl extension for handling MODS records
  # Set a list of deeply nested fields...
  $mods->add_location(sub {
 	$_[0]->add_physicalLocation('here');
-	$_[0]->add_shelfLocation('here too');
+	$_[0]->add_shelfLocator('here too');
 	$_[0]->add_url('http://here.org/there');
  }); 
 
@@ -237,7 +237,7 @@ as perl itself. See L<http://dev.perl.org/licenses/>.
 =cut
 
 use vars qw( $VERSION );
-$VERSION = '0.07';
+$VERSION = '0.08';
 
 use Exporter;
 our @ISA = qw(Exporter);
@@ -746,10 +746,10 @@ has xml_lang        => ( is => 'rw' );
 has script          => ( is => 'rw' );
 has transliteration => ( is => 'rw' );
 
-has displayLabel    => ( is => 'rw' );
-has altRepGroup     => ( is => 'rw' );
+has displayLabel     => ( is => 'rw' );
+has altRepGroup      => ( is => 'rw' );
 has physicalLocation => ( is => 'rw' , isa => \&_isa , default => sub { [] } );
-has shelfLocation    => ( is => 'rw' , isa => \&_isa , default => sub { [] } );
+has shelfLocator     => ( is => 'rw' , isa => \&_isa , default => sub { [] } );
 has url              => ( is => 'rw' , isa => \&_isa , default => sub { [] } );
 has holdingSimple    => ( is => 'rw' , isa => \&_isa , default => sub { [] } );
 has holdingExternal  => ( is => 'rw' , isa => \&_isa , default => sub { [] } );
@@ -774,21 +774,6 @@ has authority       => ( is => 'rw' );
 has displayLabel    => ( is => 'rw' );
 has type            => ( is => 'rw' );
 has xlink           => ( is => 'rw' );
-has _body           => ( is => 'rw' );
-
-package MODS::Element::ShelfLocation;
-
-use Moo;
-
-with('MODS::Record::Util');
-
-use overload fallback => 1 , '""' => sub { $_[0]->_body };
-
-has lang            => ( is => 'rw' );
-has xml_lang        => ( is => 'rw' );
-has script          => ( is => 'rw' );
-has transliteration => ( is => 'rw' );
-
 has _body           => ( is => 'rw' );
 
 package MODS::Element::Url;
