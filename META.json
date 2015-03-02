@@ -1,0 +1,70 @@
+{
+   "abstract" : "Perl extension for handling MODS records",
+   "author" : [
+      "=over 4"
+   ],
+   "dynamic_config" : 0,
+   "generated_by" : "Dist::Milla version v1.0.5, Dist::Zilla version 5.016, CPAN::Meta::Converter version 2.143240",
+   "license" : [
+      "perl_5"
+   ],
+   "meta-spec" : {
+      "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+      "version" : "2"
+   },
+   "name" : "MODS-Record",
+   "no_index" : {
+      "directory" : [
+         "t",
+         "xt",
+         "inc",
+         "share",
+         "eg",
+         "examples"
+      ]
+   },
+   "prereqs" : {
+      "configure" : {
+         "requires" : {
+            "Module::Build::Tiny" : "0.039"
+         }
+      },
+      "develop" : {
+         "requires" : {
+            "Test::Pod" : "1.41"
+         }
+      },
+      "runtime" : {
+         "requires" : {
+            "Carp" : "1.3301",
+            "IO" : "1.25",
+            "JSON" : "2.90",
+            "Moo" : "1.007000",
+            "XML::Parser" : "2.44",
+            "perl" : "v5.10.1"
+         }
+      },
+      "test" : {
+         "requires" : {
+            "Test::Deep" : "0.112",
+            "Test::Exception" : "0.32",
+            "Test::More" : "1.001003",
+            "Test::Pod" : "0"
+         }
+      }
+   },
+   "release_status" : "stable",
+   "resources" : {
+      "bugtracker" : {
+         "web" : "https://github.com/LibreCat/MODS-Record/issues"
+      },
+      "homepage" : "https://github.com/LibreCat/MODS-Record",
+      "repository" : {
+         "type" : "git",
+         "url" : "https://github.com/LibreCat/MODS-Record.git",
+         "web" : "https://github.com/LibreCat/MODS-Record"
+      }
+   },
+   "version" : "0.08"
+}
+
