@@ -1,6 +1,7 @@
 Revision history for perl module MODS::Record
 
 {{NEXT}}
+
     - Downgrading cpanfile
 
 0.08 2015-03-02
