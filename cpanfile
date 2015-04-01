@@ -1,15 +1,15 @@
 requires 'perl', 'v5.10.1';
 
 on 'test', sub {
-  requires 'Test::Deep', '0.112';
-  requires 'Test::Exception', '0.32';
-  requires 'Test::More', '1.001003';
-  requires 'Test::Pod', 0;
+  requires 'Test::Deep', '0.110';
+  requires 'Test::Exception', '0.31';
+  requires 'Test::More', 0;
+  requires 'Test::Pod', '0.06';
 };
 
 
-requires 'Carp', '1.3301';
-requires 'IO', '1.25';
-requires 'JSON', '2.90';
-requires 'Moo', '1.007000';
-requires 'XML::Parser', '2.44';
+requires 'Carp', 0;
+requires 'IO', 0;
+requires 'JSON', '2.53';
+requires 'Moo', '0.091011';
+requires 'XML::Parser', '2.41';
