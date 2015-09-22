@@ -7,7 +7,6 @@ on 'test', sub {
   requires 'Test::Pod', '0.06';
 };
 
-
 requires 'Carp', 0;
 requires 'IO', 0;
 requires 'JSON', '2.53';

@@ -7,6 +7,7 @@ use Test::More tests=>64;
 use MODS::Record qw(xml_string);
 use IO::File;
 use open qw(:utf8);
+use utf8;
 
 my $mods;
 

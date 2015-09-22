@@ -523,7 +523,7 @@ sub as_json {
     my ($self, %opts) = @_;
     my $class = ref $self; 
     $class =~ s{^(.*)::(.)(.*)}{lc($2) . $3}e;
-    to_json({$class => $self}, { convert_blessed => 1 , allow_blessed => 1 , pretty => $opts{pretty}});
+    to_json({$class => $self}, { utf8 => 1, convert_blessed => 1 , allow_blessed => 1 , pretty => $opts{pretty}});
 }
 
 sub TO_JSON { 
@@ -2361,7 +2361,7 @@ sub parse_json {
 
 sub _parse_json {
     my $json_txt = shift;
-    my $perl = JSON->new->utf8(0)->decode($json_txt);
+    my $perl = JSON->new->utf8(1)->decode($json_txt);
 
     _bless_object($perl);
 

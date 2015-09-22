@@ -1,7 +1,8 @@
 Revision history for perl module MODS::Record
 
 {{$NEXT}}
-
+    - Fixing UTF8 bug in JSON export
+    
 0.10  2015-09-22 15:46:42 CEST
     - Adding missing Affiliation tag
     
