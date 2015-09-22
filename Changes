@@ -1,6 +1,8 @@
 Revision history for perl module MODS::Record
 
 {{$NEXT}}
+
+0.10  2015-09-22 15:46:42 CEST
     - Adding missing Affiliation tag
     
 0.09  2015-04-01 13:18:23 CEST
