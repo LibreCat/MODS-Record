@@ -1,9 +1,9 @@
 Revision history for perl module MODS::Record
 
 {{$NEXT}}
-
+    - Adding missing Affiliation tag
+    
 0.09  2015-04-01 13:18:23 CEST
-
     - Downgrading cpanfile
 
 0.08 2015-03-02
