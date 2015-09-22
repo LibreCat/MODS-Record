@@ -15,6 +15,7 @@
             <roleTerm type="code" authority="marcrelator">pht</roleTerm>
             <roleTerm type="text" authority="marcrelator">Photographer</roleTerm>
         </role>
+        <affiliation>ug_TW14</affiliation>
     </name>
     <typeOfResource>still image</typeOfResource>
     <genre authority="gmgpc">Landscape photographs</genre>

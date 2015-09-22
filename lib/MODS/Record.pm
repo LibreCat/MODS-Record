@@ -598,6 +598,12 @@ has altFormat    => ( is => 'rw' );
 has contentType  => ( is => 'rw' );
 has _body        => ( is => 'rw' );
 
+package MODS::Element::Affiliation;
+
+use Moo;
+
+with('MODS::Record::Util','MODS::Record::Unique');
+
 package MODS::Element::Classification;
 
 use Moo;

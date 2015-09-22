@@ -21,9 +21,9 @@ MODS::Record - Perl extension for handling MODS records
 
     # Set a list of deeply nested fields...
     $mods->add_location(sub {
-           $_[0]->add_physicalLocation('here');
-           $_[0]->add_shelfLocator('here too');
-           $_[0]->add_url('http://here.org/there');
+       $_[0]->add_physicalLocation('here');
+       $_[0]->add_shelfLocator('here too');
+       $_[0]->add_url('http://here.org/there');
     }); 
 
     # Set an inline XML extension...
@@ -34,13 +34,13 @@ MODS::Record - Perl extension for handling MODS records
     $mods->get_abstract(lang => 'fra')->contentType('text/plain');
 
     for ($mods->get_abstract(lang => 'fra')) {
-           printf "%s\n" , $_->body;
+       printf "%s\n" , $_->body;
     }
 
     # Set a field to a new value
     my @newabstract;
     for ($mods->get_abstract) {
-           push @newabstract, $_ unless $_->lang eq 'fra';
+       push @newabstract, $_ unless $_->lang eq 'fra';
     }
     $mods->set_abstract(@newabstract);
 
@@ -56,13 +56,13 @@ MODS::Record - Perl extension for handling MODS records
     my $mods = MODS::Record->from_json(IO::File->new('mods.js'));
 
     my $count = MODS::Record->from_xml(IO::File->new('mods.xml'), sub {
-           my $mods = shift;
-           ...     
+       my $mods = shift;
+       ...    
     });
 
     my $count = MODS::Record->from_json(IO::File->new('mods.js'), sub {
-           my $mods = shift;
-           ...     
+       my $mods = shift;
+       ...    
     });
 
 # DESCRIPTION
@@ -100,9 +100,9 @@ Add a new element to the record where 'xxx' is the name of a MODS element. The p
 of the added MODS element. This method returns an instance of the added MODS element. E.g.
 
     $mods->add_abstract(sub {
-           my $o = shift;
-           $o->body("My abstract");
-           $o->lang("eng");
+       my $o = shift;
+       $o->body("My abstract");
+       $o->lang("eng");
     })
 
 ## add\_xxx($obj)
@@ -111,7 +111,7 @@ Add a new element to the record where 'xxx' is the name of a MODS element. The $
 class (where Xxx is the corresponding MODS element). This method returns an instance of the added MODS element. E.g.
 
     $mods->add_abstract(
-           MODS::Element::Abstract->new(_body=>'My abstract', lang=>'eng')
+        MODS::Element::Abstract->new(_body=>'My abstract', lang=>'eng')
     );
 
 ## get\_xxx()
