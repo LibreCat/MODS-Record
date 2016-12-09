@@ -11,4 +11,4 @@ requires 'Carp', 0;
 requires 'IO', 0;
 requires 'JSON', '2.53';
 requires 'Moo', '0.091011';
-requires 'XML::Parser', '2.41';
+requires 'XML::Parser', '2.44';

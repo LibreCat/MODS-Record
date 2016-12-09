@@ -4,7 +4,7 @@ MODS::Record - Perl extension for handling MODS records
 
 # SYNOPSIS
 
-    use MODS::Record qw(xml_string); 
+    use MODS::Record qw(xml_string);
     use open qw(:utf8);
 
     my $mods = MODS::Record->new;
@@ -24,7 +24,7 @@ MODS::Record - Perl extension for handling MODS records
        $_[0]->add_physicalLocation('here');
        $_[0]->add_shelfLocator('here too');
        $_[0]->add_url('http://here.org/there');
-    }); 
+    });
 
     # Set an inline XML extension...
     $mods->add_accessCondition(xml_string("<x:foo><x:bar>21212</x:bar></x:foo>"));
@@ -57,12 +57,12 @@ MODS::Record - Perl extension for handling MODS records
 
     my $count = MODS::Record->from_xml(IO::File->new('mods.xml'), sub {
        my $mods = shift;
-       ...    
+       ...
     });
 
     my $count = MODS::Record->from_json(IO::File->new('mods.js'), sub {
        my $mods = shift;
-       ...    
+       ...
     });
 
 # DESCRIPTION
@@ -165,7 +165,7 @@ The method returns the number of parsed MODS elements.
     E.g.
        my $mods = MODS::Record->from_xml( IO::File->new(...) );
 
-       my $count = MODS::Record->from_xml( IO::File->new(...) , sub { 
+       my $count = MODS::Record->from_xml( IO::File->new(...) , sub {
            my $mods = shift;
        } );
 
@@ -181,14 +181,14 @@ Return the record as JSON string.
 
 Parse and JSON string or JSON::Handle into a MODS::Record. This method return the parsed JSON.
 
-If a callback function is provided then we expect as input a stream of JSON strings 
+If a callback function is provided then we expect as input a stream of JSON strings
 (each line one JSON string). For each MODS object in the JSON stream the callback will be called.
 The method returns the number of parsed strings.
 
     E.g.
        my $mods = MODS::Record->from_json( IO::File->new(...) );
 
-       my $count = MODS::Record->from_json( IO::File->new(...) , sub { 
+       my $count = MODS::Record->from_json( IO::File->new(...) , sub {
            my $mods = shift;
        } );
 
