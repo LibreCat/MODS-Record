@@ -6,7 +6,7 @@ MODS::Record - Perl extension for handling MODS records
 
 =head1 SYNOPSIS
 
- use MODS::Record qw(xml_string); 
+ use MODS::Record qw(xml_string);
  use open qw(:utf8);
 
  my $mods = MODS::Record->new;
@@ -26,7 +26,7 @@ MODS::Record - Perl extension for handling MODS records
     $_[0]->add_physicalLocation('here');
     $_[0]->add_shelfLocator('here too');
     $_[0]->add_url('http://here.org/there');
- }); 
+ });
 
  # Set an inline XML extension...
  $mods->add_accessCondition(xml_string("<x:foo><x:bar>21212</x:bar></x:foo>"));
@@ -59,12 +59,12 @@ MODS::Record - Perl extension for handling MODS records
 
  my $count = MODS::Record->from_xml(IO::File->new('mods.xml'), sub {
     my $mods = shift;
-    ...    
+    ...
  });
 
  my $count = MODS::Record->from_json(IO::File->new('mods.js'), sub {
     my $mods = shift;
-    ...    
+    ...
  });
 
 =head1 DESCRIPTION
@@ -167,7 +167,7 @@ The method returns the number of parsed MODS elements.
  E.g.
     my $mods = MODS::Record->from_xml( IO::File->new(...) );
 
-    my $count = MODS::Record->from_xml( IO::File->new(...) , sub { 
+    my $count = MODS::Record->from_xml( IO::File->new(...) , sub {
         my $mods = shift;
     } );
 
@@ -183,14 +183,14 @@ Return the record as JSON string.
 
 Parse and JSON string or JSON::Handle into a MODS::Record. This method return the parsed JSON.
 
-If a callback function is provided then we expect as input a stream of JSON strings 
+If a callback function is provided then we expect as input a stream of JSON strings
 (each line one JSON string). For each MODS object in the JSON stream the callback will be called.
 The method returns the number of parsed strings.
 
  E.g.
     my $mods = MODS::Record->from_json( IO::File->new(...) );
 
-    my $count = MODS::Record->from_json( IO::File->new(...) , sub { 
+    my $count = MODS::Record->from_json( IO::File->new(...) , sub {
         my $mods = shift;
     } );
 
@@ -221,18 +221,17 @@ But each sub-element keeps its original order (e.g. each 'title' in 'titleInfo')
 
 =back
 
-=head1 AUTHORS
+=head1 AUTHOR
 
-=over 4
+Patrick Hochstenbach <Patrick.Hochstenbach at UGent.be>
 
-=item * Patrick Hochstenbach <Patrick . Hochstenbach at UGent . be>
+=head1 LICENSE AND COPYRIGHT
 
-=back
+This program is free software; you can redistribute it and/or modify it
+under the terms of either: the GNU General Public License as published
+by the Free Software Foundation; or the Artistic License.
 
-=head1 LICENSE
-
-This library is free software and may be distributed under the same terms
-as perl itself. See L<http://dev.perl.org/licenses/>.
+See L<http://dev.perl.org/licenses/> for more information.
 
 =cut
 
@@ -372,7 +371,7 @@ sub _setter {
 
     if (@objs == 0) {
         $ret = $self->$attrib;
-    }    
+    }
     elsif (@objs == 1 && ref($objs[0]) eq 'ARRAY') {
         $self->$attrib($objs[0]);
         $ret = $objs[0];
@@ -399,7 +398,7 @@ sub _adder {
         ($self, $attrib, $obj,%opts) = @_;
     }
 
-    my $class = $attrib; 
+    my $class = $attrib;
     $class =~ s{^(.)}{uc($1)}e;
     $class = "MODS::Element::$class";
 
@@ -466,7 +465,7 @@ sub as_xml {
     my ($self,%opts) = @_;
 
     my $output = '';
-    my $class = ref $self; 
+    my $class = ref $self;
     $class =~ s{^(.*)::(.)(.*)}{lc($2) . $3}e;
 
     my $encoding = $opts{'encoding'} || 'UTF-8';
@@ -505,7 +504,7 @@ sub as_xml {
 
     for my $key (keys %$self) {
         my $val = $self->$key;
-        
+
         if ($key =~ /^_/ || ref $val ne 'ARRAY') {
             next;
         }
@@ -521,12 +520,12 @@ sub as_xml {
 
 sub as_json {
     my ($self, %opts) = @_;
-    my $class = ref $self; 
+    my $class = ref $self;
     $class =~ s{^(.*)::(.)(.*)}{lc($2) . $3}e;
     to_json({$class => $self}, { utf8 => 1, convert_blessed => 1 , allow_blessed => 1 , pretty => $opts{pretty}});
 }
 
-sub TO_JSON { 
+sub TO_JSON {
     my $ret = { %{ shift() } };
     for (keys %$ret) {
         if (ref $ret->{$_} eq 'ARRAY' && @{$ret->{$_}} == 0) {
@@ -1677,8 +1676,8 @@ has type            => ( is => 'rw' );
 
 has titleInfo       => ( is => 'rw' , isa => \&_isa , default => sub { [] });
 has name            => ( is => 'rw' , isa => \&_isa , default => sub { [] });
-has typeOfResource  => ( is => 'rw' , isa => \&_isa , default => sub { [] }); 
-has genre           => ( is => 'rw' , isa => \&_isa , default => sub { [] });  
+has typeOfResource  => ( is => 'rw' , isa => \&_isa , default => sub { [] });
+has genre           => ( is => 'rw' , isa => \&_isa , default => sub { [] });
 has originInfo      => ( is => 'rw' , isa => \&_isa , default => sub { [] });
 has language        => ( is => 'rw' , isa => \&_isa , default => sub { [] });
 has physicalDescription  => ( is => 'rw' , isa => \&_isa , default => sub { [] });
@@ -2312,7 +2311,7 @@ sub parse {
     $flag  = 0;
     $count = 0;
 
-    my $parser = XML::Parser->new(Handlers => { 
+    my $parser = XML::Parser->new(Handlers => {
                                     Start => \&start ,
                                     Char  => \&char,
                                     End   => \&end ,
@@ -2326,7 +2325,7 @@ sub parse {
     else {
         $stack[0];
     }
-}     
+}
 
 sub parse_json {
     my ($self, $source, $callback) = @_;
@@ -2452,13 +2451,13 @@ sub end {
     }
     else {
         $body = MODS::Record::Xml_String->new(_body => $body) if $flag;
-        
+
         $flag = 0;
 
         $stack[-1]->_body($body) if $stack[-1]->can('_body');
 
         $body = undef;
-    
+
         if ($local_name eq 'mods' && defined $callback) {
             $count++;
             $callback->(pop(@stack));
