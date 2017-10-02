@@ -4,7 +4,7 @@
       "Patrick Hochstenbach <Patrick.Hochstenbach at UGent.be>"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Dist::Milla version v1.0.17, Dist::Zilla version 6.008, CPAN::Meta::Converter version 2.150005",
+   "generated_by" : "Dist::Zilla version 5.047, Dist::Milla version v1.0.15, CPAN::Meta::Converter version 2.150001",
    "license" : [
       "perl_5"
    ],
@@ -41,7 +41,7 @@
             "IO" : "0",
             "JSON" : "2.53",
             "Moo" : "0.091011",
-            "XML::Parser" : "2.41",
+            "XML::Parser" : "2.44",
             "perl" : "v5.10.1"
          }
       },
@@ -66,10 +66,9 @@
          "web" : "https://github.com/LibreCat/MODS-Record"
       }
    },
-   "version" : "0.11",
+   "version" : "0.12",
    "x_contributors" : [
       "Patrick Hochstenbach <patrick.hochstenbach@ugent.be>"
    ],
    "x_serialization_backend" : "Cpanel::JSON::XS version 3.0225"
 }
-
