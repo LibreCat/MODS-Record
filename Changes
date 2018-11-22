@@ -1,6 +1,8 @@
 Revision history for perl module MODS::Record
 
 {{$NEXT}}
+
+0.13  2018-11-22 15:59:34 CET
     - Fixing name element has missing type attribute #4
     - Fixing empty MODS::Element::Affiliation #5
     - Fixing license
