@@ -601,7 +601,11 @@ package MODS::Element::Affiliation;
 
 use Moo;
 
-with('MODS::Record::Util','MODS::Record::Unique');
+with('MODS::Record::Util');
+
+use overload fallback => 1 , '""' => sub { $_[0]->_body };
+
+has _body            => ( is => 'rw' );
 
 package MODS::Element::Classification;
 
