@@ -2,7 +2,7 @@
 
 use strict;
 
-use Test::More tests=>64;
+use Test::More tests=>67;
 
 use MODS::Record qw(xml_string);
 use IO::File;
@@ -61,6 +61,11 @@ ok($access = $mods->add_accessCondition('test'),"set string accessCondition");
 is($access,'test');
 ok($access = $mods->add_accessCondition(xml_string('<test/>')),"set XML accessCondition");
 is($access,'<test/>');
+
+my $name   = $mods->add_name(type => 'test');
+ok ($name->type,'test');
+ok ($mods->get_name(type => 'test'));
+ok (!$mods->get_name(type => 'best'));
 
 my @access;
 ok(@access = $mods->get_accessCondition,"get accessCondition");

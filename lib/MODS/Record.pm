@@ -943,6 +943,7 @@ has displayLabel    => ( is => 'rw' );
 has usage           => ( is => 'rw' );
 has altRepGroup     => ( is => 'rw' );
 has nameTitleGroup  => ( is => 'rw' );
+has type            => ( is => 'rw' );
 
 has namePart        => ( is => 'rw' , isa => \&_isa , default => sub { [] } );
 has displayForm     => ( is => 'rw' , isa => \&_isa , default => sub { [] } );
