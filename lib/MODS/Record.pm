@@ -236,7 +236,7 @@ See L<http://dev.perl.org/licenses/> for more information.
 =cut
 
 use vars qw( $VERSION );
-$VERSION = '0.13';
+$VERSION = '0.14';
 
 use Exporter;
 our @ISA = qw(Exporter);
